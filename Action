@@ -1,0 +1,8 @@
+//This is the interface for the undoable feature in TaskMaster
+
+public interface Action {
+
+void undo(TaskManager manager);
+
+}
+
