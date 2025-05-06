@@ -1,1 +1,218 @@
+import java.time.LocalDate;
+import java.util.*;
+
+
+
+//Main class with menu interface
+public class TaskMaster {
+
+private static TaskManager taskManager = new TaskManger();
+private static Scanner scanner = new Scanner(System.in);
+
+public static void main(String[] args) {
+
+// Loop to display menu
+while (true) {
+
+displayMenu():
+int choice = getIntInput("Enter your choice: ");
+
+switch (choice) {
+
+   case 1: addNewTask();  // List
+   break;
+
+   case 2: undoAction(); //Stack
+   break;
+
+   case 3: processNextTask(); //Queue
+   break;
+
+   case 4: viewHighestPriorityTasks(); // PriorityQueue
+   break;
+
+   case 5: listAllUniqueTags(); // Set
+   break;
+
+   case 6: viewTasksByStatus(); // Map
+   break;
+
+   case 7: findTasksByDueDate(); //BST TreeMap
+   break;
+
+   case 0: System.out.prinln("Exiting...");
+   return;
+
+default: System.out.println("Invalid choice. Try again.");
+
+
+
+}
+
+}
+
+}
+
+
+// This will display the menu options
+private static void displayMenu() {
+
+System.out.println("\nTaskMaster Menu:");
+System.out.println("1. Add a New Task");
+System.out.println("2. Undo Last");
+System.out.println("3. Process Next Task");
+System.out.println("4. View Highest Priority Tasks");
+System.out.println("5. List all Unique Tasks");
+System.out.println("6. View Tasks by Status");
+System.out.println("7. find Tasks Due on a Specific date);
+System.out.println("0. Exit");
+
+}
+
+//Read integer from input from user
+private static int getIntInput(string prompt) {
+
+System.out.println(prompt);
+
+try {
+
+return Integer.parseInt(scanner.nextLine());
+
+} catch (NumberFormatException e) {
+
+return -1;
+
+}
+}
+
+//Add new task for user input
+private static void addNewTask() {
+
+// List: Adds task to allTasks
+System.out.prinln("Enter task name: ");
+String name = scaner.nextLine();
+System.out.println("Enter description: ");
+String desc = scanner.nextLine();
+System.out.println("Enter due date (YYYY-MM-DD): ");
+
+LocalDate dueDate;
+
+try { 
+
+ dueDate = LocalDate.parse(scanner.nextLine();
+ 
+} catch (Exception e) {
+
+System.out.println("Invalid date format. Using today.");
+dueDate = LocalDate.now();
+
+}
+
+int priority = getIntInput("Enter priority ( 1=highest): ");
+
+if (priority < 1) priority = 1;
+System.out.prinln("Enter status (To Do, In Progress, Done): ");
+String status = scanner.nextLine();
+
+if (!status.equals("To Do") && !status.equals("In Progress") && !status.equals("Done")) {
+  status = "To Do";
+
+}
+
+System.out.println("Enter tags (comma seperated): ");
+
+Set<String> tags = new HashSet<>(Arrays.asList(scanner.nextLine().split(",\\s*")));
+Task task = new Task(name, desc, dueDate, priority, status, tags);
+taskManager.addTask(task, true);
+System.out.println("Task added: " + task);
+
+}
+
+
+// Undo last action
+private static void undoAction() {
+// Stack usage
+taskManager.undo();
+system.out.println("Last action undone.");
+
+}
+
+// This will process the next task in the queue
+private static void processNextTask() {
+
+Queue<Task> workQueue = taskManager.getWorkQueue();
+
+if (!workQueue.isEmpty()) {
+Task task = workQueue.peek();
+System.out.println("Next task: " + task);
+System.out.println("Mark as Done? (yes/no): ");
+
+if (scanner.nextLine().equalsIgnoreCase("yes")) {
+    workQueue.poll();
+task.setStatus("Done");
+taskManager.getTasksByStatus().get(task.getStatus()).remove(task);
+taskManager.getTasksByStatus().computeIfAbsent("Done", k -> new ArrayList<>()).add(task);
+System.out.println("Task markedd as Done.");
+
+}
+} else {
+  System.out.println("No tasks to process.");
+}
+}
+
+//Display highest priority tasks
+private static void viewHighestPriorityTasks() {
+
+Set<String> uniqueTags = new HashSet<>();
+
+for (Task task : taskManager.getTasksByStatus().values().stream().flatMap(List::stream).toList()) {
+
+uniqueTags.addAll(task.getTags());
+
+}
+
+System.out.println("Unique Tags: " + uniqueTags);
+
+
+}
+
+// This will display task by status
+
+private static void viewTasksByStatus() {
+ System.out.print("Enter status to view: ");
+String status = scanner.nextLine();
+
+  List<Task> tasks = taskManager.getTasksByStatus().getOrDefault(status, new ArrayList<>());
+        System.out.println("Tasks with status '" + status + "': " + tasks);
+    }
+
+// Finds tasks due on a specific date
+    private static void findTasksByDueDate() {
+
+        // BST: Finds tasks by due date via TreeMap
+        System.out.print("Enter due date (YYYY-MM-DD): ");
+        LocalDate date;
+
+        try {
+
+            date = LocalDate.parse(scanner.nextLine());
+
+        } catch (Exception e) {
+
+            System.out.println("Invalid date format.");
+            return;
+        }
+
+        List<Task> tasks = taskManager.getTasksByDueDate().getOrDefault(date, new ArrayList<>());
+        System.out.println("Tasks due on " + date + ": " + tasks);
+    }
+}
+
+
+
+
+
+
+
+
 
