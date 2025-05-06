@@ -2,16 +2,16 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class TaskManager {
-    //Stores all tasks in the system
+    //Stores all tasks
     private List<Task> allTasks = new ArrayList<>();
 
     //Stack for tracking undoable actions
     private Stack<Action> undoStack = new Stack<>();
 
-    //Queue for tasks to be processed (FIFO)
+    //Queue for tasks to be processed FIFO
     private Queue<Task> workQueue = new LinkedList<>();
 
-    //Priority queue for highest priority task viewing
+    //Priority queue for highest priority task
     private PriorityQueue<Task> priorityQueue = new PriorityQueue<>(
             Comparator.comparingInt(Task::getPriority)
     );
@@ -22,97 +22,119 @@ public class TaskManager {
     // TreeMap to store tasks by due date in sorted order
     private TreeMap<LocalDate, List<Task>> tasksByDueDate = new TreeMap<>();
 
-    //ADDING TASK
+    //Add task
     public void addTask(Task task, boolean recordAction) {
+
         allTasks.add(task);
         priorityQueue.offer(task);
+
         if (task.getStatus().equalsIgnoreCase("To Do")) {
             workQueue.offer(task);
+
         }
 
-        // Adding to status map
+        // Add to status map
         tasksByStatus.computeIfAbsent(task.getStatus(), k -> new ArrayList<>()).add(task);
 
-        // Adding to due date map
+        // Add to due date map
         tasksByDueDate.computeIfAbsent(task.getDueDate(), k -> new ArrayList<>()).add(task);
 
         // Recording the action if needed
         if (recordAction) {
             undoStack.push(new AddTaskAction(task));
+
         }
     }
 
-    //REMOVING TASK
+    //Removing task
     public void removeTask(Task task, boolean recordAction) {
+
         allTasks.remove(task);
         priorityQueue.remove(task);
         workQueue.remove(task);
 
         // Removing from status map
         List<Task> statusList = tasksByStatus.get(task.getStatus());
+
         if (statusList != null) {
             statusList.remove(task);
+
         }
 
         // Removing from due date map
         List<Task> dueList = tasksByDueDate.get(task.getDueDate());
+
         if (dueList != null) {
+
             dueList.remove(task);
         }
 
         // Recording the action if needed
         if (recordAction) {
+
             undoStack.push(new RemoveTaskAction(task));
         }
     }
 
-    // UNDOING LAST ACTION
+    // Undo last action
     public void undo() {
+
         if (undoStack.isEmpty()) {
             System.out.println("Nothing to undo.");
             return;
         }
+
         Action lastAction = undoStack.pop();
         lastAction.undo(this);
         System.out.println("Last action has been undone.");
     }
 
-    //VIEWING TASKS BY STATUS
+    //Viewing tasks by status
     public List<Task> getTasksByStatus(String status) {
+
         return tasksByStatus.getOrDefault(status, new ArrayList<>());
     }
 
-    // GETTING TASKS BY DUE DATE
+    // Getting Tasks by due date
     public List<Task> getTasksByDate(LocalDate date) {
+
         return tasksByDueDate.getOrDefault(date, new ArrayList<>());
     }
 
-    // VIEWING TOP PRIORITY TASKS
+    // Viewing top priority tasks
     public List<Task> getTopPriorityTasks(int count) {
+
         List<Task> result = new ArrayList<>();
         Iterator<Task> it = priorityQueue.iterator();
+
         while (it.hasNext() && result.size() < count) {
             result.add(it.next());
         }
         return result;
     }
 
-    // LISTING ALL UNIQUE TAGS
+    // Listing all unique tags
     public Set<String> getAllUniqueTags() {
-        Set<String> tags = new HashSet<>();
+      
+      Set<String> tags = new HashSet<>();
         for (Task task : allTasks) {
+
             tags.addAll(task.getTags());
         }
         return tags;
     }
 
-    //PROCESSING NEXT TASK
+    //Processing next task
     public void processNextTask() {
+
         Task task = workQueue.poll();
+
         if (task == null) {
+
             System.out.println("No tasks in the queue.");
             return;
         }
+
         System.out.println("Processing Task: " + task.getName());
         task.setStatus("Done");
         System.out.println("Marked as Done.");
