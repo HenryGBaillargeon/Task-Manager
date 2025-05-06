@@ -7,7 +7,7 @@ Henry and Nirajan Project Hours:5/3  2 hours 7 - 9 pm  _ Created Action Interfac
 Henry and Nirajan Project Hours: 5/5 2 hours 7 - 9pm _ Created TaskManager class andTaskMaster class.
 
 
-To-Do-List: Nirajan - AddTaskAction Class, Henry - TaskMaster Class
+To-Do-List: Nirajan - AddTaskAction Class, Henry - TaskMaster Class           //*Dont write class in the file name title when naming it 
 
 AddTaskAction Class
 Purpose: Represents an action to undo the addition of a task.
