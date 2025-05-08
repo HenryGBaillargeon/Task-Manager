@@ -1,0 +1,21 @@
+// AddTaskAcion implements Acion 
+
+public class AddTaskAction implements Action {
+
+// Constructor to store task
+
+public AddTaskAction(Task task) {
+
+this.task = task;
+}
+
+// Undo task addition by removing
+
+@Override
+public void undo(Task task) {
+
+this.task = task;
+
+
+}
+}
