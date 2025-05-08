@@ -1,0 +1,106 @@
+import java.time.LocalDate;
+import java.util.Set;
+
+// Task with attributes
+public class Task {
+
+private String name;
+private String description;
+private LocalDate dueDate;
+private int priority;
+private String status;
+private Set<String> tags;
+
+// Lets set a constructor to initialize all attributes
+public Task(String name, String description, LocalDate dueDate, int priority, String status, Set<String> tags) {
+
+this.name = name;
+this.description = description;
+this.dueDate = dueDate;
+this.priority = priority;
+this.status = status;
+this.tags = tags;
+
+}
+
+// Getters and Setters
+public String getName() {
+
+return name;
+
+}
+
+public void setName(String name) {
+
+this.name = name;
+}
+
+public String getDescription() {
+this.description = description;
+
+}
+
+public void setDescription(String description) {
+
+this.description = description;
+}
+
+public LocalDate getDueDate() {
+
+return dueDate;
+}
+
+public void setDueDate(LocalDate dueDate) {
+this.dueDate = dueDate;
+
+}
+
+public int getPriority () {
+
+return priority;
+}
+
+public void setPriority(int priority) {
+
+this.priority = priority;
+}
+
+public String getStatus() {
+
+return status;
+}
+
+public void setStatus(String status) {
+
+this.status = status;
+}
+
+public Set<String> getTags() {
+
+return tags;
+}
+
+public void setTags(Set<String> tags) {
+
+this.tags = tags;
+}
+
+
+
+//Return string of the task for display
+@Override
+public String toString() {
+
+return "Task: " + name + " | Due: " + dueDate + " | Priority: " + " | Status: " + status + " | Tags: " + tags;
+
+
+}
+
+
+
+}
+
+
+
+
+
