@@ -1,21 +1,24 @@
-// AddTaskAcion implements Acion 
-
-public class AddTaskAction implements Action {
-
-// Constructor to store task
-
-public AddTaskAction(Task task) {
-
-this.task = task;
-}
-
-// Undo task addition by removing
-
-@Override
-public void undo(Task task) {
-
-this.task = task;
+package managefinal;
 
 
-}
+        public class AddTaskAction implements Action {
+	
+	private Task task;
+	
+	// Constructor to store task
+    public AddTaskAction(Task task) {
+
+	this.task = task;
+	}
+
+	// Undo task addition by removing
+	@Override
+	public void undo(TaskManager manager) {
+
+	manager.removeTask(task, false);
+
+
+	}
+	
+
 }
