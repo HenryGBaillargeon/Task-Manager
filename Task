@@ -1,106 +1,101 @@
+package managefinal;
+
 import java.time.LocalDate;
 import java.util.Set;
 
-// Task with attributes
-public class Task {
+   // Task with attributes
+   public class Task {
 
-private String name;
-private String description;
-private LocalDate dueDate;
-private int priority;
-private String status;
-private Set<String> tags;
+   private String name;
+   private String description;
+   private LocalDate dueDate;
+   private int priority;
+   private String status;
+   private Set<String> tags;
 
-// Lets set a constructor to initialize all attributes
-public Task(String name, String description, LocalDate dueDate, int priority, String status, Set<String> tags) {
+    // Lets set a constructor to initialize all attributes
+    public Task(String name, String description, LocalDate dueDate, int priority, String status, Set<String> tags) {
 
-this.name = name;
-this.description = description;
-this.dueDate = dueDate;
-this.priority = priority;
-this.status = status;
-this.tags = tags;
+    this.name = name;
+    this.description = description;
+    this.dueDate = dueDate;
+    this.priority = priority;
+    this.status = status;
+    this.tags = tags;
 
 }
 
 // Getters and Setters
-public String getName() {
+     public String getName() {
 
-return name;
-
-}
-
-public void setName(String name) {
-
-this.name = name;
-}
-
-public String getDescription() {
-this.description = description;
+     return name;
 
 }
 
-public void setDescription(String description) {
+     public void setName(String name) {
 
-this.description = description;
+     this.name = name;
 }
 
-public LocalDate getDueDate() {
-
-return dueDate;
-}
-
-public void setDueDate(LocalDate dueDate) {
-this.dueDate = dueDate;
+     public String getDescription() {
+	
+     return description;
 
 }
 
-public int getPriority () {
+      public void setDescription(String description) {
 
-return priority;
+      this.description = description;
 }
 
-public void setPriority(int priority) {
+      public LocalDate getDueDate() {
 
-this.priority = priority;
+      return dueDate;
 }
 
-public String getStatus() {
-
-return status;
-}
-
-public void setStatus(String status) {
-
-this.status = status;
-}
-
-public Set<String> getTags() {
-
-return tags;
-}
-
-public void setTags(Set<String> tags) {
-
-this.tags = tags;
-}
-
-
-
-//Return string of the task for display
-@Override
-public String toString() {
-
-return "Task: " + name + " | Due: " + dueDate + " | Priority: " + " | Status: " + status + " | Tags: " + tags;
-
+      public void setDueDate(LocalDate dueDate) {
+      this.dueDate = dueDate;
 
 }
 
+      public int getPriority () {
+
+      return priority;
+}
+
+      public void setPriority(int priority) {
+
+      this.priority = priority;
+}
+
+      public String getStatus() {
+
+      return status;
+}
+
+       public void setStatus(String status) {
+
+	   this.status = status;
+}
+
+     public Set<String> getTags() {
+
+     return tags;
+}
+
+       public void setTags(Set<String> tags) {
+
+      this.tags = tags;
+}
+
+
+      //Return string of the task for display
+     @Override
+     public String toString() {
+
+    return "Task: " + name + " | Due: " + dueDate + " | Priority: " + " | Status: " + status + " | Tags: " + tags;
 
 
 }
 
-
-
-
-
+} 
