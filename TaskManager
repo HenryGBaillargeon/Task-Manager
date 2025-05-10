@@ -1,142 +1,178 @@
+package managefinal;
+
 import java.time.LocalDate;
 import java.util.*;
 
+// Manages tasks and their associated data structures
 public class TaskManager {
-    //Stores all tasks
+    // Stores tasks
     private List<Task> allTasks = new ArrayList<>();
-
-    //Stack for tracking undoable actions
+    
+    // Stack to tracking undo
     private Stack<Action> undoStack = new Stack<>();
-
-    //Queue for tasks to be processed FIFO
+    
+    // Queue for tasks FIFO
     private Queue<Task> workQueue = new LinkedList<>();
-
-    //Priority queue for highest priority task
-    private PriorityQueue<Task> priorityQueue = new PriorityQueue<>(
-            Comparator.comparingInt(Task::getPriority)
-    );
-
-    //Maps status ("To Do", "In Progress", "Done") to list of tasks
+    
+    // Priority queue for highest priority task
+    private PriorityQueue<Task> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(Task::getPriority));
+    
+    // Maps status ("To Do", "In Progress", "Done") to list of tasks
     private Map<String, List<Task>> tasksByStatus = new HashMap<>();
-
+    
     // TreeMap to store tasks by due date in sorted order
     private TreeMap<LocalDate, List<Task>> tasksByDueDate = new TreeMap<>();
 
-    //Add task
+    // Add task
     public void addTask(Task task, boolean recordAction) {
-
+    	
         allTasks.add(task);
         priorityQueue.offer(task);
-
+        
         if (task.getStatus().equalsIgnoreCase("To Do")) {
+        	
             workQueue.offer(task);
-
         }
-
         // Add to status map
-        tasksByStatus.computeIfAbsent(task.getStatus(), k -> new ArrayList<>()).add(task);
-
+        tasksByStatus.computeIfAbsent(normalizeStatus(task.getStatus()), k -> new ArrayList<>()).add(task);
+        
         // Add to due date map
         tasksByDueDate.computeIfAbsent(task.getDueDate(), k -> new ArrayList<>()).add(task);
-
-        // Recording the action if needed
+        
+        // Record the action if needed
         if (recordAction) {
+        	
             undoStack.push(new AddTaskAction(task));
-
         }
     }
 
-    //Removing task
+    // Remove task
     public void removeTask(Task task, boolean recordAction) {
-
+    	
         allTasks.remove(task);
         priorityQueue.remove(task);
         workQueue.remove(task);
-
-        // Removing from status map
-        List<Task> statusList = tasksByStatus.get(task.getStatus());
-
+        
+        // Remove from status map
+        List<Task> statusList = tasksByStatus.get(normalizeStatus(task.getStatus()));
         if (statusList != null) {
+        	
             statusList.remove(task);
-
         }
-
-        // Removing from due date map
+        
+        // Remove from due date map
         List<Task> dueList = tasksByDueDate.get(task.getDueDate());
-
+        
         if (dueList != null) {
-
+        	
             dueList.remove(task);
         }
-
-        // Recording the action if needed
+        
+        // Record the action if needed
         if (recordAction) {
-
+        	
             undoStack.push(new RemoveTaskAction(task));
         }
     }
 
+    // Update task status
+    public void updateTaskStatus(Task task, String newStatus) {
+    	
+        String oldStatus = task.getStatus();
+        task.setStatus(normalizeStatus(newStatus));
+        
+        // Remove from old status list
+        List<Task> oldStatusList = tasksByStatus.get(normalizeStatus(oldStatus));
+        
+        if (oldStatusList != null) {
+        	
+            oldStatusList.remove(task);
+        }
+        // Add to new status list
+        tasksByStatus.computeIfAbsent(normalizeStatus(newStatus), k -> new ArrayList<>()).add(task);
+    }
+
     // Undo last action
     public void undo() {
-
+    	
         if (undoStack.isEmpty()) {
+        	
             System.out.println("Nothing to undo.");
             return;
         }
-
+        
         Action lastAction = undoStack.pop();
         lastAction.undo(this);
         System.out.println("Last action has been undone.");
     }
 
-    //Viewing tasks by status
+    // View tasks by status
     public List<Task> getTasksByStatus(String status) {
-
-        return tasksByStatus.getOrDefault(status, new ArrayList<>());
+    	
+        return tasksByStatus.getOrDefault(normalizeStatus(status), new ArrayList<>());
     }
 
-    // Getting Tasks by due date
+    // Get tasks by due date
     public List<Task> getTasksByDate(LocalDate date) {
-
+    	
         return tasksByDueDate.getOrDefault(date, new ArrayList<>());
     }
 
-    // Viewing top priority tasks
+    // View top priority tasks
     public List<Task> getTopPriorityTasks(int count) {
-
+    	
         List<Task> result = new ArrayList<>();
         Iterator<Task> it = priorityQueue.iterator();
-
+        
         while (it.hasNext() && result.size() < count) {
+        	
             result.add(it.next());
         }
         return result;
     }
 
-    // Listing all unique tags
+    // List all unique tags
     public Set<String> getAllUniqueTags() {
-      
-      Set<String> tags = new HashSet<>();
+    	
+        Set<String> tags = new HashSet<>();
         for (Task task : allTasks) {
-
+        	
             tags.addAll(task.getTags());
         }
         return tags;
     }
 
-    //Processing next task
+    // Process next task
     public void processNextTask() {
-
+    	
         Task task = workQueue.poll();
-
+        
         if (task == null) {
-
             System.out.println("No tasks in the queue.");
             return;
         }
-
+        
         System.out.println("Processing Task: " + task.getName());
         task.setStatus("Done");
         System.out.println("Marked as Done.");
+    }
+
+    // Getter for workQueue
+    public Queue<Task> getWorkQueue() {
+        return workQueue;
+    }
+
+    // Normalize status to title case
+    private String normalizeStatus(String status) {
+    	
+        if (status == null) return "To Do";
+        status = status.trim();
+        
+        if (status.equalsIgnoreCase("to do")) return "To Do";
+        
+        if (status.equalsIgnoreCase("in progress")) return "In Progress";
+        
+        if (status.equalsIgnoreCase("done")) return "Done";
+        return status; // original if not recognized
     }
 }
